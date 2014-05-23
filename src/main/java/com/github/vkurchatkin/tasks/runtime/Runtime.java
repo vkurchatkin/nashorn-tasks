@@ -1,5 +1,6 @@
 package com.github.vkurchatkin.tasks.runtime;
 
+import com.github.vkurchatkin.tasks.runtime.internals.Platform;
 import com.github.vkurchatkin.tasks.runtime.internals.Stdio;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 public class Runtime {
     private final static String[] NASHORN_OPTS = { "--no-syntax-extensions" };
-    private final static String[] BUILTINS = { "console", "util" };
+    private final static String[] BUILTINS = { "console", "util", "path" };
 
     private NashornScriptEngine engine;
     private ScriptContext context;
@@ -41,6 +42,7 @@ public class Runtime {
         internals = new HashMap<>();
 
         internals.put("stdio", new Stdio());
+        internals.put("platform", new Platform());
     }
 
     synchronized public void run () throws RuntimeException {

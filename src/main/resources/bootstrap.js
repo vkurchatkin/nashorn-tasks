@@ -1,6 +1,8 @@
 (function bootstrap (bindings) {
   var global = this;
 
+  global.global = global;
+
   global.define = function (id, factory) {
     bindings.defineModule(id, factory);
   };
@@ -26,7 +28,9 @@
     bindings.exit(-1);
   }
 
-  var filepath = cwd + '/' + args[0]; // TODO normalize, etc.
+  var path = require('path');
+
+  var filepath = path.join(cwd, args[0]);
   
 
   var src = bindings.readFile(filepath);;
