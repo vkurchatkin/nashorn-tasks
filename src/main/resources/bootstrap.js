@@ -1,11 +1,22 @@
 (function bootstrap (bindings) {
   var global = this;
 
-  global.console = {
-    log : function (str) {
-      bindings.log(str);
-    }
+  global.define = function (id, factory) {
+    bindings.defineModule(id, factory);
   };
+
+  global.require = function (id) {
+    return bindings.require(id);
+  };
+
+  global.require.internal = {};
+  global.require.internal.api = function (id) {
+    return bindings.getInternal(id);
+  };
+
+  var Console = bindings.requireModule('console');
+
+  global.console = new Console;
 
   var args = Java.from(bindings.getArgs());
   var cwd = bindings.getCwd();

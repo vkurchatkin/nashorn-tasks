@@ -1,5 +1,7 @@
 package com.github.vkurchatkin.tasks.runtime;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+
 import javax.script.ScriptException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -50,5 +52,17 @@ public class Bindings {
 
     public String getCwd () {
         return Paths.get(".").toAbsolutePath().normalize().toString();
+    }
+
+    public Object requireModule (String id) throws RuntimeException, ScriptException, IOException {
+        return runtime.require(id);
+    }
+
+    public void defineModule (String id, ScriptObjectMirror factory) throws RuntimeException {
+        runtime.defineModule(id, factory);
+    }
+
+    public Object getInternal (String id) {
+        return runtime.getInternal(id);
     }
 }
