@@ -1,4 +1,7 @@
-console.log('Yay!!!');
+console.log({
+  'some_field' : 22343,
+  arr : [1, 2, 3]
+});
 
 try {
   throw new Error('test')

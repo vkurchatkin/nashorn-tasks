@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class Runtime {
     private final static String[] NASHORN_OPTS = { "--no-syntax-extensions" };
-    private final static String[] BUILTINS = { "console" };
+    private final static String[] BUILTINS = { "console", "util" };
 
     private NashornScriptEngine engine;
     private ScriptContext context;

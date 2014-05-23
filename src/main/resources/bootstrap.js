@@ -6,7 +6,7 @@
   };
 
   global.require = function (id) {
-    return bindings.require(id);
+    return bindings.requireModule(id);
   };
 
   global.require.internal = {};
