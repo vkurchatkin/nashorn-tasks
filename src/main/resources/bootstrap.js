@@ -1,3 +1,6 @@
 (function (bindings) {
-  bindings.sayMyName();
+  var global = this;
+
+  bindings.log(Object.getOwnPropertyNames(global).join(', '));
+
 });

@@ -6,7 +6,7 @@ package com.github.vkurchatkin.tasks.runtime;
  * Time: 15:44
  */
 public class Bindings {
-    public void sayMyName () {
-        System.out.println("Heisenberg");
+    public void log (String str) {
+        System.out.println(str);
     }
 }
