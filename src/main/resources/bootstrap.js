@@ -1,28 +1,22 @@
 (function bootstrap (bindings) {
   var global = this;
 
-  var console = {
+  global.console = {
     log : function (str) {
       bindings.log(str);
     }
   };
 
-  function test () {
-    outer();
-  }
+  var bad = bindings.runScript("function bad () { throw new Error('bad thing'); }", 'file.js');
 
-  function bad () {
-    test();
+  function other () {
+    bad();
   }
 
   try {
-    bad();
+    other();
   } catch (e) {
-    console.log(e.stack)
+    console.log(e.stack);
   }
 
 });
-
-function outer () {
-  throw new Error('test')
-}

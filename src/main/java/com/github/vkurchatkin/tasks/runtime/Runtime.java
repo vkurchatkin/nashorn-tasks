@@ -4,12 +4,9 @@ import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import javax.script.SimpleBindings;
+import javax.script.*;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 /**
  * User: vk
@@ -20,35 +17,46 @@ public class Runtime {
     private final static String[] NASHORN_OPTS = { "--no-java", "--no-syntax-extensions" };
 
     private NashornScriptEngine engine;
+    private ScriptContext context;
 
     private Bindings bindings;
 
     public Runtime() {
         NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
         engine = (NashornScriptEngine) factory.getScriptEngine(NASHORN_OPTS);
-        bindings = new Bindings();
+        bindings = new Bindings(this);
+        context = new SimpleScriptContext();
+        context.setBindings(new SimpleBindings(), ScriptContext.GLOBAL_SCOPE);
     }
 
     synchronized public void run () throws RuntimeException {
 
-        ScriptObjectMirror res = null;
+        ScriptObjectMirror res;
+
         try {
             res = (ScriptObjectMirror) runInternal("bootstrap.js");
-        } catch (ScriptException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         res.call(null, bindings);
     }
 
-    private Object runInternal (String filename) throws ScriptException {
+    public Object runInternal (String filename) throws ScriptException, IOException {
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream("bootstrap.js");
-        Reader reader = new InputStreamReader(stream);
 
-        SimpleBindings b = new SimpleBindings();
+        StringBuilder sb = new StringBuilder();
 
-        b.put(ScriptEngine.FILENAME, filename);
+        int ch;
+        while((ch = stream.read())!= -1)
+            sb.append((char)ch);
 
-        return engine.eval(reader, b);
+        return runScript(sb.toString(), filename);
+    }
+
+    public Object runScript (String src, String filename) throws ScriptException {
+        context.getBindings(ScriptContext.GLOBAL_SCOPE).put(ScriptEngine.FILENAME, filename);
+
+        return engine.eval(src, context);
     }
 }
