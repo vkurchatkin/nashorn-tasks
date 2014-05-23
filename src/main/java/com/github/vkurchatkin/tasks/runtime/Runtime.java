@@ -14,19 +14,21 @@ import java.io.InputStream;
  * Time: 16:10
  */
 public class Runtime {
-    private final static String[] NASHORN_OPTS = { "--no-java", "--no-syntax-extensions" };
+    private final static String[] NASHORN_OPTS = { "--no-syntax-extensions" };
 
     private NashornScriptEngine engine;
     private ScriptContext context;
 
     private Bindings bindings;
+    private String[] args;
 
-    public Runtime() {
+    public Runtime(String[] args) {
         NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
         engine = (NashornScriptEngine) factory.getScriptEngine(NASHORN_OPTS);
         bindings = new Bindings(this);
         context = new SimpleScriptContext();
         context.setBindings(new SimpleBindings(), ScriptContext.GLOBAL_SCOPE);
+        this.args = args;
     }
 
     synchronized public void run () throws RuntimeException {
@@ -58,5 +60,9 @@ public class Runtime {
         context.getBindings(ScriptContext.GLOBAL_SCOPE).put(ScriptEngine.FILENAME, filename);
 
         return engine.eval(src, context);
+    }
+
+    public String[] getArgs() {
+        return args;
     }
 }

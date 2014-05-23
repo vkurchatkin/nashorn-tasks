@@ -10,7 +10,7 @@ import com.github.vkurchatkin.tasks.runtime.Runtime;
 public class Main {
     public static void main(String [] args) {
 
-        Runtime runtime = new Runtime();
+        Runtime runtime = new Runtime(args);
 
         try {
             runtime.run();

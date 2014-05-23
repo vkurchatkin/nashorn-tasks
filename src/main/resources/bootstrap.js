@@ -7,16 +7,19 @@
     }
   };
 
-  var bad = bindings.runScript("function bad () { throw new Error('bad thing'); }", 'file.js');
+  var args = Java.from(bindings.getArgs());
+  var cwd = bindings.getCwd();
 
-  function other () {
-    bad();
+  if (args.length === 0) {
+    console.log('no script specified');
+    bindings.exit(-1);
   }
 
-  try {
-    other();
-  } catch (e) {
-    console.log(e.stack);
-  }
+  var filepath = cwd + '/' + args[0]; // TODO normalize, etc.
+  
+
+  var src = bindings.readFile(filepath);;
+
+  bindings.runScript(src, filepath);
 
 });
