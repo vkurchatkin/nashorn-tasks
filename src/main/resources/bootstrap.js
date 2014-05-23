@@ -1,3 +1,3 @@
-(function () {
-  print('Bootstapping stuff');
-}());
+(function (bindings) {
+  bindings.sayMyName();
+});

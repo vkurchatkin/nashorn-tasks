@@ -1,5 +1,8 @@
 package com.github.vkurchatkin.tasks;
 
+import com.github.vkurchatkin.tasks.runtime.Bindings;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.InputStream;
@@ -19,7 +22,9 @@ public class Main {
             InputStream stream = Main.class.getClassLoader().getResourceAsStream("bootstrap.js");
             Reader reader = new InputStreamReader(stream);
 
-            engine.eval(reader);
+            ScriptObjectMirror res = (ScriptObjectMirror) engine.eval(reader);
+            res.call(null, new Bindings());
+
         } catch (Exception e) {
             System.err.println("Initialization failed");
             System.exit(-1);
