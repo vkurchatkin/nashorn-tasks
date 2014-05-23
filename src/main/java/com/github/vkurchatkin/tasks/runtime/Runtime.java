@@ -15,7 +15,7 @@ import java.io.Reader;
  * Time: 16:10
  */
 public class Runtime {
-    private final static String[] NASHORN_OPTS = { "--no-java" };
+    private final static String[] NASHORN_OPTS = { "--no-java", "--no-syntax-extensions" };
 
     private NashornScriptEngine engine;
 
