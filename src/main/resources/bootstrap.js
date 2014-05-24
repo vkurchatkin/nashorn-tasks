@@ -76,7 +76,7 @@
 
   global.console = new Console;
 
-  var args = Java.from(runtime.getArgs());
+  var args = runtime.getArgs();
   var cwd = platform.getCwd();
 
   if (args.length === 0) {
