@@ -1,28 +1,28 @@
-(function bootstrap (bindings) {
+(function bootstrap (runtime) {
   var global = this;
 
   global.global = global;
 
   global.define = function (id, factory) {
-    bindings.defineModule(id, factory);
+    runtime.defineModule(id, factory);
   };
 
   global.require = function (id) {
-    return bindings.requireModule(id);
+    return runtime.requireModule(id);
   };
 
   global.require.internal = {};
   global.require.internal.api = function (id) {
-    return bindings.getInternal(id);
+    return runtime.getInternal(id);
   };
 
-  var Console = bindings.requireModule('console');
-  var fs = bindings.getInternal('filesystem');
-  var platform = bindings.getInternal('platform');
+  var Console = runtime.requireModule('console');
+  var fs = runtime.getInternal('filesystem');
+  var platform = runtime.getInternal('platform');
 
   global.console = new Console;
 
-  var args = Java.from(bindings.getArgs());
+  var args = Java.from(runtime.getArgs());
   var cwd = platform.getCwd();
 
   if (args.length === 0) {
@@ -37,6 +37,6 @@
 
   var src = fs.readFile(filepath);;
 
-  bindings.runScript(src, filepath);
+  runtime.runScript(src, filepath);
 
 });
