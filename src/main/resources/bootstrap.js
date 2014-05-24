@@ -174,6 +174,12 @@
 
   var src = fs.readFile(filepath);;
 
-  runtime.runScript(src, filepath);
+  try {
+    runtime.runScript(src, filepath);
+  } catch (e) {
+    console.error(e.getCause().message);
+    console.error(runtime.getErrorStack(e.getCause()));
+    platform.exit(-1);
+  }
 
 });

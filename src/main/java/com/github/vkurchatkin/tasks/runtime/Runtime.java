@@ -3,6 +3,7 @@ package com.github.vkurchatkin.tasks.runtime;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.internal.runtime.ECMAException;
 import org.reflections.Reflections;
 
 import javax.script.*;
@@ -86,6 +87,10 @@ public class Runtime {
 
     public void debugLog (String str) {
         System.out.println(str);
+    }
+
+    public String getErrorStack (Throwable e) {
+        return ECMAException.getScriptStackString(e); // HACK
     }
 
 }
