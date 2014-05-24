@@ -10,7 +10,6 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import javax.script.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,13 +20,11 @@ import java.util.Map;
  */
 public class Runtime {
     private final static String[] NASHORN_OPTS = { "--no-syntax-extensions" };
-    private final static String[] BUILTINS = { "console", "util", "path" };
 
     private NashornScriptEngine engine;
     private ScriptContext context;
 
     private String[] args;
-    private Map<String, Module> moduleCache;
     private Map<String, Object> internals;
 
     public Runtime(String[] args) {
@@ -36,7 +33,6 @@ public class Runtime {
         context = new SimpleScriptContext();
         context.setBindings(new SimpleBindings(), ScriptContext.GLOBAL_SCOPE);
         this.args = args;
-        moduleCache = new HashMap<>();
 
         internals = new HashMap<>();
 
@@ -80,39 +76,12 @@ public class Runtime {
         return args;
     }
 
-    public Object requireModule (String id) throws RuntimeException, ScriptException, IOException {
-        if (moduleCache.containsKey(id)) {
-            return moduleCache.get(id).getExports();
-        }
-
-        Module module;
-
-        if (Arrays.asList(BUILTINS).contains(id)) {
-            module = new Module(id, id + ".js");
-            this.moduleCache.put(id, module);
-            this.runInternal(id + ".js");
-        } else {
-            throw new RuntimeException("Not implemented yet");
-        }
-
-        if (module.getFactory() == null) {
-            throw  new RuntimeException("Module was loaded, but not defined");
-        }
-
-
-        return module.getExports();
-    }
-
-    public void defineModule (String id, ScriptObjectMirror factory) throws RuntimeException {
-        if (!moduleCache.containsKey(id)) {
-            throw new RuntimeException("Unknown module");
-        }
-
-        moduleCache.get(id).setFactory(factory);
-    }
-
     public Object getInternal (String id) {
         return internals.get(id);
+    }
+
+    public void debugLog (String str) {
+        System.out.println(str);
     }
 
 }

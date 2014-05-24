@@ -3,12 +3,62 @@
 
   global.global = global;
 
+
+  function Module (id, filename) {
+    this.id = id;
+    this.filename = filename;
+    this.factory = null;
+    this.exports = null;
+    this.loading = false;
+    this.loaded = false;
+  }
+
+  Module.prototype.getExports = function () {
+    if (this.loaded) // exports can be falsey
+      return this.exports;
+
+    this.loading = true;
+    this.exports = this.factory.call(global);
+    this.loading = false;
+    this.loaded = true;
+
+    return this.exports;
+  };
+
+  var moduleCache = {};
+  var BUILTINS = [
+    'console',
+    'util',
+    'path'
+  ];
+
+  var fs = runtime.getInternal('filesystem');
+
   global.define = function (id, factory) {
-    runtime.defineModule(id, factory);
+    if (!moduleCache.hasOwnProperty(id))
+      throw new Error('Unknown module');
+
+    moduleCache[id].factory = factory;
   };
 
   global.require = function (id) {
-    return runtime.requireModule(id);
+    if (moduleCache.hasOwnProperty(id))
+      return moduleCache[id].getExports();
+
+    var module;
+
+    if (BUILTINS.indexOf(id) !== -1) {
+      module = new Module(id, id + '.js');
+      moduleCache[id] = module;
+      runtime.runInternal(id + '.js');
+    } else {
+      throw new Error('Module not found'); // TODO userland modules
+    }
+
+    if (!module.factory)
+      throw new Error('Module was loaded, but not defined');
+
+    return module.getExports();
   };
 
   global.require.internal = {};
@@ -16,8 +66,7 @@
     return runtime.getInternal(id);
   };
 
-  var Console = runtime.requireModule('console');
-  var fs = runtime.getInternal('filesystem');
+  var Console = require('console');
   var platform = runtime.getInternal('platform');
 
   global.console = new Console;
