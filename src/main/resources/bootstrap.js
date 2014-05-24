@@ -104,7 +104,8 @@
   var BUILTINS = {
     console : 'amd',
     util : 'cjs',
-    path : 'cjs'
+    path : 'cjs',
+    assert : 'cjs'
   };
 
   var fs = runtime.getInternal('filesystem');
