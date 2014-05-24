@@ -17,15 +17,17 @@
   };
 
   var Console = bindings.requireModule('console');
+  var fs = bindings.getInternal('filesystem');
+  var platform = bindings.getInternal('platform');
 
   global.console = new Console;
 
   var args = Java.from(bindings.getArgs());
-  var cwd = bindings.getCwd();
+  var cwd = platform.getCwd();
 
   if (args.length === 0) {
     console.log('no script specified');
-    bindings.exit(-1);
+    platform.exit(-1);
   }
 
   var path = require('path');
@@ -33,7 +35,7 @@
   var filepath = path.join(cwd, args[0]);
   
 
-  var src = bindings.readFile(filepath);;
+  var src = fs.readFile(filepath);;
 
   bindings.runScript(src, filepath);
 

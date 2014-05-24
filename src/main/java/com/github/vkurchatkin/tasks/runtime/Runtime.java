@@ -1,5 +1,6 @@
 package com.github.vkurchatkin.tasks.runtime;
 
+import com.github.vkurchatkin.tasks.runtime.internals.Filesystem;
 import com.github.vkurchatkin.tasks.runtime.internals.Platform;
 import com.github.vkurchatkin.tasks.runtime.internals.Stdio;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
@@ -25,7 +26,6 @@ public class Runtime {
     private NashornScriptEngine engine;
     private ScriptContext context;
 
-    private Bindings bindings;
     private String[] args;
     private Map<String, Module> moduleCache;
     private Map<String, Object> internals;
@@ -33,7 +33,6 @@ public class Runtime {
     public Runtime(String[] args) {
         NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
         engine = (NashornScriptEngine) factory.getScriptEngine(NASHORN_OPTS);
-        bindings = new Bindings(this);
         context = new SimpleScriptContext();
         context.setBindings(new SimpleBindings(), ScriptContext.GLOBAL_SCOPE);
         this.args = args;
@@ -43,6 +42,7 @@ public class Runtime {
 
         internals.put("stdio", new Stdio());
         internals.put("platform", new Platform());
+        internals.put("filesystem", new Filesystem());
     }
 
     synchronized public void run () throws RuntimeException {
@@ -55,7 +55,7 @@ public class Runtime {
             throw new RuntimeException(e);
         }
 
-        res.call(null, bindings);
+        res.call(null, this);
     }
 
     public Object runInternal (String filename) throws ScriptException, IOException {
@@ -80,7 +80,7 @@ public class Runtime {
         return args;
     }
 
-    public Object require (String id) throws RuntimeException, ScriptException, IOException {
+    public Object requireModule (String id) throws RuntimeException, ScriptException, IOException {
         if (moduleCache.containsKey(id)) {
             return moduleCache.get(id).getExports();
         }
