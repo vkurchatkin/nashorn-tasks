@@ -1,17 +1,16 @@
 package com.github.vkurchatkin.tasks.runtime;
 
-import com.github.vkurchatkin.tasks.runtime.internals.Filesystem;
-import com.github.vkurchatkin.tasks.runtime.internals.Platform;
-import com.github.vkurchatkin.tasks.runtime.internals.Stdio;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import org.reflections.Reflections;
 
 import javax.script.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: vk
@@ -34,11 +33,20 @@ public class Runtime {
         context.setBindings(new SimpleBindings(), ScriptContext.GLOBAL_SCOPE);
         this.args = args;
 
+        Reflections reflections = new Reflections("com.github.vkurchatkin.tasks.runtime.internals");
+
+        Set<Class<?>> internalClasses = reflections.getTypesAnnotatedWith(Internal.class);
+
         internals = new HashMap<>();
 
-        internals.put("stdio", new Stdio());
-        internals.put("platform", new Platform());
-        internals.put("filesystem", new Filesystem());
+        for (Class internal : internalClasses) {
+            Internal annotation = (Internal) internal.getAnnotation(Internal.class);
+            try {
+                internals.put(annotation.name(), internal.newInstance());
+            } catch (Exception e) {
+            }
+        }
+
     }
 
     synchronized public void run () throws RuntimeException {

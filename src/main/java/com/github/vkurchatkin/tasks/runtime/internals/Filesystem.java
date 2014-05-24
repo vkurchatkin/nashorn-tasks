@@ -1,5 +1,7 @@
 package com.github.vkurchatkin.tasks.runtime.internals;
 
+import com.github.vkurchatkin.tasks.runtime.Internal;
+
 import java.io.*;
 
 /**
@@ -7,6 +9,8 @@ import java.io.*;
  * Date: 24/05/14
  * Time: 13:59
  */
+
+@Internal(name="filesystem")
 public class Filesystem {
     public String readFile (String path) throws IOException {
         FileReader reader = new FileReader(path);
