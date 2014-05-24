@@ -79,17 +79,43 @@
     return this.exports;
   };
 
+  function wrapAMD (src) {
+    return ';(function(){' + src + '}());';
+  }
+
+  function wrapCJS (src, name) {
+    var res = [];
+
+    res.push('function wrapFn(module, exports){');
+    res.push(src);
+    res.push('}');
+
+    res.push('define("' + name + '",');
+    res.push('function () {');
+    res.push('var module = { exports : {} };');
+    res.push('wrapFn(module, module.exports)');
+    res.push('return module.exports;');
+    res.push('})');
+
+    return wrapAMD(res.join('\n'));
+  }
+
   var moduleCache = {};
-  var BUILTINS = [
-    'console',
-    'util',
-    'path'
-  ];
+  var BUILTINS = {
+    console : 'amd',
+    util : 'cjs',
+    path : 'cjs'
+  };
 
   var fs = runtime.getInternal('filesystem');
 
-  function runBuiltinScript (filename) {
+  function runBuiltinScript (filename, mtype, id) {
     var source = fs.readResource(filename);
+
+    if (mtype === 'amd')
+      source = wrapAMD(source);
+    else if (mtype === 'cjs')
+      source = wrapCJS(source, id);
 
     return runtime.runScript(source, filename);
   }
@@ -107,10 +133,10 @@
 
     var module;
 
-    if (BUILTINS.indexOf(id) !== -1) {
+    if (BUILTINS.hasOwnProperty(id)) {
       module = new Module(id, id + '.js');
       moduleCache[id] = module;
-      runBuiltinScript(id + '.js');
+      runBuiltinScript(id + '.js', BUILTINS[id], id);
     } else {
       throw new Error('Module not found'); // TODO userland modules
     }

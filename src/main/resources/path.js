@@ -19,9 +19,6 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-(function () {
-
-function wrapperFn (exports) {
 
 var isWindows = require.internal.api('platform').getOS().match(/win/);
 var util = require('util');
@@ -518,13 +515,3 @@ if (isWindows) {
     return path;
   };
 }
-
-}
-
-define('path', function () {
-  var exports = {};
-  wrapperFn(exports);
-  return exports;
-});
-
-}());

@@ -19,10 +19,6 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-(function () {
-
-function wrapperFn (exports) {
-
 var formatRegExp = /%[sdj%]/g;
 exports.format = function(f) {
     if (!isString(f)) {
@@ -656,13 +652,3 @@ exports._extend = function(origin, add) {
 function hasOwnProperty(obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
 }
-
-}
-
-define('util', function () {
-  var exports = {};
-  wrapperFn(exports);
-  return exports;
-});
-
-}());
