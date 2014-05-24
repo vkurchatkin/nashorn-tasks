@@ -6,7 +6,6 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.reflections.Reflections;
 
 import javax.script.*;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,9 +51,17 @@ public class Runtime {
     synchronized public void run () throws RuntimeException {
 
         ScriptObjectMirror res;
+        InputStream stream = this.getClass().getClassLoader().getResourceAsStream("bootstrap.js");
+
+        StringBuilder sb = new StringBuilder();
 
         try {
-            res = (ScriptObjectMirror) runInternal("bootstrap.js");
+            int ch;
+
+            while((ch = stream.read())!= -1)
+                sb.append((char)ch);
+
+            res = (ScriptObjectMirror) runScript(sb.toString(), "bootstrap.js");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -62,17 +69,6 @@ public class Runtime {
         res.call(null, this);
     }
 
-    public Object runInternal (String filename) throws ScriptException, IOException {
-        InputStream stream = this.getClass().getClassLoader().getResourceAsStream(filename);
-
-        StringBuilder sb = new StringBuilder();
-
-        int ch;
-        while((ch = stream.read())!= -1)
-            sb.append((char)ch);
-
-        return runScript(sb.toString(), filename);
-    }
 
     public Object runScript (String src, String filename) throws ScriptException {
         context.getBindings(ScriptContext.GLOBAL_SCOPE).put(ScriptEngine.FILENAME, filename);

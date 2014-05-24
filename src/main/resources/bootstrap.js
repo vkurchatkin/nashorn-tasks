@@ -3,7 +3,6 @@
 
   global.global = global;
 
-
   function Module (id, filename) {
     this.id = id;
     this.filename = filename;
@@ -34,6 +33,12 @@
 
   var fs = runtime.getInternal('filesystem');
 
+  function runBuiltinScript (filename) {
+    var source = fs.readResource(filename);
+
+    return runtime.runScript(source, filename);
+  }
+
   global.define = function (id, factory) {
     if (!moduleCache.hasOwnProperty(id))
       throw new Error('Unknown module');
@@ -50,7 +55,7 @@
     if (BUILTINS.indexOf(id) !== -1) {
       module = new Module(id, id + '.js');
       moduleCache[id] = module;
-      runtime.runInternal(id + '.js');
+      runBuiltinScript(id + '.js');
     } else {
       throw new Error('Module not found'); // TODO userland modules
     }
