@@ -3,6 +3,61 @@
 
   global.global = global;
 
+  var knownGlobals = [
+    'global',
+    'console',
+    'eval',
+    'Infinity',
+    'isFinite',
+    'EvalError',
+    'Function',
+    'Array',
+    'Error',
+    'decodeURIComponent',
+    'escape',
+    'encodeURIComponent',
+    'Uint8Array',
+    'Int16Array',
+    'encodeURI',
+    'TypeError',
+    'SyntaxError',
+    'Uint8ClampedArray',
+    'NaN',
+    'String',
+    'Number',
+    'Boolean',
+    'RangeError',
+    'Uint16Array',
+    'ArrayBuffer',
+    'DataView',
+    'Int8Array',
+    'Float64Array',
+    'parseFloat',
+    'Int32Array',
+    'unescape',
+    'isNaN',
+    'undefined',
+    'ReferenceError',
+    'decodeURI',
+    'RegExp',
+    'JSON',
+    'parseInt',
+    'Uint32Array',
+    'Date',
+    'Math',
+    'URIError',
+    'Object',
+    'Float32Array'
+  ];
+
+  // sanitize global object
+
+  Object.getOwnPropertyNames(global).forEach(function (prop) {
+    if (knownGlobals.indexOf(prop) === -1) {
+      delete global[prop];
+    }
+  });
+
   function Module (id, filename) {
     this.id = id;
     this.filename = filename;
