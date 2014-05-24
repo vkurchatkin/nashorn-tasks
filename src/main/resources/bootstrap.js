@@ -31,9 +31,10 @@
   }
 
   var path = require('path');
+  var filepath = args[0];
 
-  var filepath = path.join(cwd, args[0]);
-  
+  if (!path.isAbsolute(filepath))
+    filepath = path.join(cwd, args[0]);
 
   var src = fs.readFile(filepath);;
 
