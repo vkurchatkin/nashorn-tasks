@@ -1,0 +1,11 @@
+{
+  "name": "tasks",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "mvn package",
+    "example": "java -jar target/tasks-0.0.1-jar-with-dependencies.jar example.js",
+    "test": "java -jar target/tasks-0.0.1-jar-with-dependencies.jar test/test.js"
+  },
+  "author": "Vladimir Kurchatkin <vladimir.kurchatkin@gmail.com>",
+  "license": "MIT"
+}
