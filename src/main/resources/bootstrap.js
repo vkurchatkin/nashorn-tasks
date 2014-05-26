@@ -179,8 +179,10 @@
   try {
     runtime.runScript(src, filepath);
   } catch (e) {
-    console.error(e.getCause().message);
-    console.error(runtime.getErrorStack(e.getCause()));
+    e.printStackTrace();
+    //console.error(e.toString());
+    console.error((e.getCause() || e).message);
+    if (e.getCause()) console.error(runtime.getErrorStack(e.getCause()));
     platform.exit(-1);
   }
 

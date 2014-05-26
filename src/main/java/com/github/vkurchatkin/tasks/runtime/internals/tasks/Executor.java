@@ -1,23 +1,22 @@
 package com.github.vkurchatkin.tasks.runtime.internals.tasks;
 
 import java.util.HashMap;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * User: vk
  * Date: 26/05/14
  * Time: 12:15
  */
-public class Executor {
+public class Executor implements ThreadFactory {
     private CompletionService<String> completionService;
-    private HashMap<Future, Job> jobs;
+    private Map<Future, Job> jobs;
 
 
     public Executor(int concurrency) {
-        completionService = new ExecutorCompletionService<String>(Executors.newFixedThreadPool(concurrency));
+        completionService = new ExecutorCompletionService<String>(Executors.newFixedThreadPool(concurrency, this));
+        jobs = new HashMap<>();
     }
 
     public void submitJob (Job job) {
@@ -33,5 +32,13 @@ public class Executor {
         jobs.remove(future);
 
         return job;
+    }
+
+
+    @Override
+    public Thread newThread(Runnable r) {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        return thread;
     }
 }

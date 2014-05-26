@@ -40,6 +40,7 @@ public class Job implements Callable<String> {
         NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
         engine = (NashornScriptEngine) factory.getScriptEngine();
         this.source = source;
+        this.data = data;
     }
 
     @Override

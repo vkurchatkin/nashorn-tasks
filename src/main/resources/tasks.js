@@ -64,8 +64,8 @@ define('tasks', function () {
     this._tasks.push(task);
   };
 
-  TaskQueue.prototype.createTask = function (fn) {
-    return new Task(this, fn);
+  TaskQueue.prototype.createTask = function (fn, input) {
+    return new Task(this, fn, input);
   };
 
   TaskQueue.prototype.run = function () {
@@ -81,14 +81,12 @@ define('tasks', function () {
     this._tasks = [];
 
     var pending = tasks.length;
+    var running = 0;
 
     var concurrency = this._concurrency;
 
-    tasks.splice(0, concurrency).forEach(function (task) {
-      task.run();
-    });
-
-    var shouldRun = true;
+    while (running < concurrency && tasks[0] && tasks[0].isReady())
+        tasks.shift().run();
 
     while (pending) {
       var job = this._executor.nextJob();
@@ -97,10 +95,16 @@ define('tasks', function () {
       if (!task)
         throw new Error('not supposed to ever happen');
 
+      running--;
+
       task._running = false;
       task.finished = true;
       task.result = JSON.parse(job.getResult());
       pending--;
+
+      // fill available slots
+      while (running < concurrency && tasks[0] && tasks[0].isReady())
+        tasks.shift().run();
     }
 
     this._running = false;
@@ -156,7 +160,7 @@ define('tasks', function () {
     if (!(dependency instanceof Task))
       throw new TypeError('`dependecy` should be a Task');
 
-    if (!dependecy._queue)
+    if (!dependency._queue)
       dependency._queue = this._queue;
 
     if (dependency._queue !== this._queue)
@@ -182,7 +186,7 @@ define('tasks', function () {
 
     this._job = bindings.createJob(src, this);
 
-    this._queue._executor.submit(this._job);
+    this._queue._executor.submitJob(this._job);
     this._running = true;
   }
 

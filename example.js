@@ -39,22 +39,27 @@ function bench (name, fn) {
 }
 
 bench('pi + e sequential', function () {
-  var r = pi(10000000) + e(10000000);
+  var r = pi(100000000) + e(100000000) + pi(100000000) + e(100000000);
   console.log(r);
 });
 
 
-var piTask = tasks.createTask(pi);
+var piTask1 = tasks.createTask(pi, 100000000);
+var piTask2 = tasks.createTask(pi, 100000000);
 
-var eTasks = tasks.createTask(e);
+var eTask1 = tasks.createTask(e, 100000000);
+var eTask2 = tasks.createTask(e, 100000000);
 
-var sumTask = tasks.createTask(function (pi, e) {
-  return pi + e;
+
+var sumTask = tasks.createTask(function (pi1, pi2, e1, e2) {
+  return pi1 + pi2 + e1 + e2;
 });
 
 sumTask
-  .addDependency(pi)
-  .addDependency(e);
+  .addDependency(piTask1)
+  .addDependency(piTask2)
+  .addDependency(eTask1)
+  .addDependency(eTask2);
 
 bench('pi + e parallel', function () {
   tasks.run();
