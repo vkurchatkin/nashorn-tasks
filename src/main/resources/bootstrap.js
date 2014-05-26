@@ -106,7 +106,8 @@
     util : 'cjs',
     path : 'cjs',
     assert : 'cjs',
-    tasks : 'amd'
+    tasks : 'amd',
+    platform : 'amd'
   };
 
   var fs = runtime.getInternal('filesystem');

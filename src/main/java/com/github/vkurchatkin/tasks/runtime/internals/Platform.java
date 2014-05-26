@@ -27,4 +27,8 @@ public class Platform {
     public int getCpus () {
         return Runtime.getRuntime().availableProcessors();
     }
+
+    public long getNanotime () {
+        return System.nanoTime();
+    }
 }
