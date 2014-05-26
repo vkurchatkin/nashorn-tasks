@@ -105,7 +105,8 @@
     console : 'amd',
     util : 'cjs',
     path : 'cjs',
-    assert : 'cjs'
+    assert : 'cjs',
+    tasks : 'amd'
   };
 
   var fs = runtime.getInternal('filesystem');

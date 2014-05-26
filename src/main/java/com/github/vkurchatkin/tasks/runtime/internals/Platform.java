@@ -24,4 +24,7 @@ public class Platform {
         System.exit(code);
     }
 
+    public int getCpus () {
+        return Runtime.getRuntime().availableProcessors();
+    }
 }
