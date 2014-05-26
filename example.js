@@ -42,3 +42,21 @@ bench('pi + e sequential', function () {
   var r = pi(10000000) + e(10000000);
   console.log(r);
 });
+
+
+var piTask = tasks.createTask(pi);
+
+var eTasks = tasks.createTask(e);
+
+var sumTask = tasks.createTask(function (pi, e) {
+  return pi + e;
+});
+
+sumTask
+  .addDependency(pi)
+  .addDependency(e);
+
+bench('pi + e parallel', function () {
+  tasks.run();
+  console.log(sumTask.result);
+});
