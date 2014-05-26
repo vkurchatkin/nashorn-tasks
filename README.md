@@ -1,5 +1,5 @@
 # concurrent tasks for Nashorn
-## inspired by `NSOperationQueue`
+inspired by `NSOperationQueue`
 
 # Prerequisites
 
@@ -20,18 +20,18 @@
 
 # Run tests
 
- - `npm test or
+ - `npm test` or
  - `./runtime test/test.js`
 
 # API
 
-1. Require:
+### Require:
 
 ```javascript
 var tasks = require('tasks');
 ```
 
-2. Create queue:
+### Create queue:
 
 ```javascript
 var queue = tasks.createQueue({ concurrency : 2 });
@@ -39,7 +39,7 @@ var queue = tasks.createQueue({ concurrency : 2 });
 
 or use `tasks` as default queue.
 
-3. Create a task:
+### Create a task:
 
 ```javascript
 var task = queue.createTask(function (numbers) {
@@ -56,7 +56,7 @@ Caveats:
  - input and output are serialized via `JSON.stringify`;
  - `require` doesn't work;
 
-4. Set up dependencies:
+### Set up dependencies:
 
 ```javascript
 var first = queue.createTask(function (numbers) {
@@ -77,15 +77,15 @@ second.addDependency(first);
 `first` gets input (second argument of `createTasks`) as an argument.
 `second` has no `input` specified, so it gets output of it's dependencies.
 
-5. Run queue:
+### Run queue:
 
 ```javascript
 queue.run();
 ```
 
-This method block until queue is empty.
+This method blocks until queue is empty.
 
-6. Check results:
+### Check results:
 
 ```javascript
 console.log(first.result);
