@@ -3,7 +3,12 @@
 
   global.global = global;
 
+  global._registerMicrotaskFunction = function (fn) {
+     runtime.registerMicrotaskFunction(fn);
+  };
+
   var knownGlobals = [
+    '_registerMicrotaskFunction',
     'global',
     'console',
     'eval',

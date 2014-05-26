@@ -25,6 +25,7 @@ public class Runtime {
 
     private String[] args;
     private Map<String, Object> internals;
+    private ScriptObjectMirror microtaskFunction;
 
     public Runtime(String[] args) {
         NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
@@ -68,6 +69,10 @@ public class Runtime {
         }
 
         res.call(null, this);
+
+        if (microtaskFunction != null)
+            microtaskFunction.call(null);
+
     }
 
 
@@ -91,6 +96,10 @@ public class Runtime {
 
     public String getErrorStack (Throwable e) {
         return ECMAException.getScriptStackString(e); // HACK
+    }
+
+    public void registerMicrotaskFunction (ScriptObjectMirror fn) {
+        microtaskFunction = fn;
     }
 
 }
