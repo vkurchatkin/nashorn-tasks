@@ -1,5 +1,5 @@
 define('tasks', function () {
-  var platform = require.internal.api('platform');
+  var platform = require('platform');
   var bindings = require.internal.api('tasks');
 
   /**
@@ -54,7 +54,12 @@ define('tasks', function () {
     this._concurrency = options.concurrency || platform.getCpus();
     this._tasks = [];
     this._running = false;
-    this._executor = bindings.createExecutor(this._concurrency);
+    var executor = this._executor = bindings.createExecutor(this._concurrency);
+
+    platform.scheduleMicrotask(function () {
+      executor.shutdown();
+    });
+
   }
 
   TaskQueue.prototype.addTask = function (task) {

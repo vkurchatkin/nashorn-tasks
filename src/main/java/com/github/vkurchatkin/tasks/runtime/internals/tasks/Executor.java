@@ -9,13 +9,15 @@ import java.util.concurrent.*;
  * Date: 26/05/14
  * Time: 12:15
  */
-public class Executor implements ThreadFactory {
+public class Executor {
     private CompletionService<String> completionService;
+    private ExecutorService executorService;
     private Map<Future, Job> jobs;
 
 
     public Executor(int concurrency) {
-        completionService = new ExecutorCompletionService<String>(Executors.newFixedThreadPool(concurrency, this));
+        executorService = Executors.newFixedThreadPool(concurrency);
+        completionService = new ExecutorCompletionService<String>(executorService);
         jobs = new HashMap<>();
     }
 
@@ -34,11 +36,7 @@ public class Executor implements ThreadFactory {
         return job;
     }
 
-
-    @Override
-    public Thread newThread(Runnable r) {
-        Thread thread = new Thread(r);
-        thread.setDaemon(true);
-        return thread;
+    public void shutdown () {
+       executorService.shutdownNow();
     }
 }

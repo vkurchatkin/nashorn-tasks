@@ -6,6 +6,10 @@ define('platform', function () {
     return bindings.getNanotime();
   }
 
+  function getCpus () {
+    return bindings.getCpus();
+  }
+
   /**
    * Microtasks (for cleanup only)
    */
@@ -41,7 +45,8 @@ define('platform', function () {
 
   return { 
     hrtime : hrtime,
-    scheduleMicrotask : scheduleMicrotask
+    scheduleMicrotask : scheduleMicrotask,
+    getCpus : getCpus
   };
 
 });
